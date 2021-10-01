@@ -8,11 +8,10 @@ public class ViewPort extends JPanel implements ActionListener {
     int WIDTH   = 1000;
     int HEIGHT  = 800;
 
-    private final String NAME = "test";
-    private final String FONT_NAME = "Cour";
-
     int size = 7;
     int pixelSize = size + 8;
+
+    String FONT_NAME = "Cour";
 
     Camera camera = new Camera(new Vector3D(0,0,0), new Vector3D(0,0,1));
     Screen screen = new Screen(camera, 1F);
@@ -20,6 +19,9 @@ public class ViewPort extends JPanel implements ActionListener {
     Timer t = new Timer(1, this);
 
     List<Sphere> spheres = new ArrayList<>();
+    Light light = new Light(new Vector3D(0,50,0), Color.WHITE);
+
+    Shader shader = new Shader();
 
     public ViewPort() {
         Sphere sphere1 = new Sphere(new Vector3D(0,0,30), 10);
@@ -28,6 +30,7 @@ public class ViewPort extends JPanel implements ActionListener {
     }
 
     void run() {
+        String NAME = "raytracer";
         JFrame frame = new JFrame(NAME);
         frame.getContentPane().setPreferredSize(new Dimension(WIDTH, HEIGHT));
         frame.setResizable(false);
@@ -44,7 +47,7 @@ public class ViewPort extends JPanel implements ActionListener {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
-        Font font = new Font(FONT_NAME, Font.BOLD, pixelSize);
+        Font font = new Font(FONT_NAME, Font.PLAIN, pixelSize);
         g.setFont(font);
 
 
@@ -69,6 +72,8 @@ public class ViewPort extends JPanel implements ActionListener {
                 // Trace ray, return pixel data, fill pixel
 
                 PixelData traced = trace(ray);
+
+                g.setColor(Util.colorMultiply(light.color, traced.brightness));
                 g.drawString(String.valueOf(traced.character), x, y);
 
             }
@@ -78,10 +83,40 @@ public class ViewPort extends JPanel implements ActionListener {
 
     public PixelData trace(Ray ray) {
 
-        for (Sphere sphere : spheres) {
-            if (ray.RaySphereIntersection(sphere)) {
-                return new PixelData('s', 0);
+        int hitIndex = -1;
+
+        // Find which sphere is hit
+        for (int i = 0; i < spheres.size(); i++) {
+            if (ray.RaySphereIntersection(spheres.get(i))) {
+                hitIndex = i;
             }
+        }
+
+        // If sphere is hit
+        if (hitIndex != -1) {
+
+            Sphere sphere = spheres.get(hitIndex);
+
+            // Find exact intersection point on sphere
+            Vector3D point = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
+
+            // Get normal of point
+            Vector3D normal = Util.vectorSubtract(point, sphere.origin);
+
+            // Calculate brightness of pixel/character
+            Vector3D lightRay = Util.vectorSubtract(light.position, point);
+
+            // Have to normalize
+            Util.normalize(normal);
+            Util.normalize(lightRay);
+
+            float brightness = Util.dotP(normal, lightRay);
+
+            if (brightness < 0) {
+                brightness = 0;
+            }
+
+            return new PixelData(shader.getBrightness(brightness), brightness);
         }
         return new PixelData(' ', 0);
     }
