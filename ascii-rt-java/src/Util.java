@@ -34,6 +34,71 @@ public class Util {
         int B = (int) (c.getBlue()  * k);
         return new Color(R, G, B);
     }
+
+    public static Vector3D vectorReflect(Vector3D incoming, Vector3D normal)  {
+        return vectorSubtract(incoming, vectorMultiply(vectorMultiply(normal, 2F), dotP(incoming, normal)));
+    }
+
+    public static void rotateAroundPoint(Vector3D point, Vector3D v, float x, float y, float z) {
+        v.translate(-point.x, -point.y, -point.z);
+        rotate(v, x, y, z);
+        v.translate(point.x, point.y, point.z);
+    }
+
+    public static void rotate(Vector3D v, float x, float y, float z) {
+        rotateX(v, x);
+        rotateY(v, y);
+        rotateZ(v, z);
+    }
+
+    public static void rotateY(Vector3D v, float degrees) {
+        float cos = (float) Math.cos(degrees);
+        float sin = (float) Math.sin(degrees);
+        float negSin = (float) -Math.sin(degrees);
+        float dx = cos    * v.x + sin  * v.z;
+        float dz = negSin * v.x + cos  * v.z;
+        v.setLocation(dx, v.y, dz);
+    }
+
+
+
+    public static void rotateX(Vector3D v, float degrees) {
+        float cos = (float) Math.cos(degrees);
+        float sin = (float) Math.sin(degrees);
+        float negSin = (float) -Math.sin(degrees);
+        float dy = cos *  v.y + negSin * v.z;
+        float dz = sin *  v.y + cos    * v.z;
+        v.setLocation(v.x, dy, dz);
+    }
+
+    public static void rotateTest(Vector3D v, float degrees) {
+        float cos = (float) Math.cos(degrees);
+        float sin = (float) Math.sin(degrees);
+        float negSin = (float) -Math.sin(degrees);
+        float dy = cos *  v.y + negSin * v.z;
+        float dz = sin *  v.y + cos    * v.z;
+        v.setLocation(v.x, v.y, dz);
+    }
+
+
+
+    public static void rotateZ(Vector3D v, float degrees) {
+        float cos = (float) Math.cos(degrees);
+        float sin = (float) Math.sin(degrees);
+        float negSin = (float) -Math.sin(degrees);
+        float dx = cos * v.x + negSin * v.y;
+        float dy = sin * v.x + cos    * v.y;
+        v.setLocation(dx, dy, v.z);
+    }
+
+    public static Vector3D rotateDXY(Vector3D p) {
+        float cos = (float) Math.cos(Math.toRadians((float) 90));
+        float sin = (float) Math.sin(Math.toRadians((float) 90));
+        float negSin = (float) -Math.sin(Math.toRadians((float) 90));
+        float newX = cos * p.x + 0 * p.y + sin * p.z;
+        float newZ = negSin * p.x + 0 * p.y + cos * p.z;
+        return new Vector3D(newX, 0, newZ);
+    }
 }
 
 
