@@ -13,8 +13,8 @@ public class Ray {
         Vector3D originToSphere = Util.vectorSubtract(sphere.origin, origin);
         float projection = Util.dotP(originToSphere, direction);
 
-        Vector3D dirMproj =  Util.vectorMultiply(direction, projection);
-        Vector3D distanceVector = Util.vectorSubtract(originToSphere,dirMproj);
+        Vector3D projectionVector =  Util.vectorMultiply(direction, projection);
+        Vector3D distanceVector = Util.vectorSubtract(originToSphere,projectionVector);
 
         float distanceSq = Util.dotP(distanceVector, distanceVector);
 

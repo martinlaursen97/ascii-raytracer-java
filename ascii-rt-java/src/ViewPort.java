@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ViewPort extends JPanel implements ActionListener {
     int WIDTH   = 1000;
@@ -16,6 +18,14 @@ public class ViewPort extends JPanel implements ActionListener {
     Screen screen = new Screen(camera, 1F);
 
     Timer t = new Timer(1, this);
+
+    List<Sphere> spheres = new ArrayList<>();
+
+    public ViewPort() {
+        Sphere sphere1 = new Sphere(new Vector3D(0,0,30), 10);
+
+        spheres.add(sphere1);
+    }
 
     void run() {
         JFrame frame = new JFrame(NAME);
@@ -38,6 +48,8 @@ public class ViewPort extends JPanel implements ActionListener {
         g.setFont(font);
 
 
+        g.setColor(Color.WHITE);
+
         for (int y = 0; y < HEIGHT; y += size) {
             for (int x = 0; x < WIDTH; x += size) {
                 // Scale coordinates down to screens size
@@ -56,9 +68,22 @@ public class ViewPort extends JPanel implements ActionListener {
 
                 // Trace ray, return pixel data, fill pixel
 
+                PixelData traced = trace(ray);
+                g.drawString(String.valueOf(traced.character), x, y);
+
             }
         }
         t.start();
+    }
+
+    public PixelData trace(Ray ray) {
+
+        for (Sphere sphere : spheres) {
+            if (ray.RaySphereIntersection(sphere)) {
+                return new PixelData('s', 0);
+            }
+        }
+        return new PixelData(' ', 0);
     }
 
     @Override
