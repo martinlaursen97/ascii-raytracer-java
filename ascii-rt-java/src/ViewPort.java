@@ -18,18 +18,20 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
     Timer t = new Timer(1, this);
 
+    static boolean rotate = true;
+
     static List<Sphere> spheres;
-    static Light light = new Light(new Vector3D(0,100,0), Color.WHITE);
+    static Light light = new Light(new Vector3D(120,250,0), Color.WHITE);
 
     Shader shader = new Shader();
 
     public ViewPort() {
-        Sphere sphere1 = new Sphere(new Vector3D(0,15,0), 40F,  true);
-        Sphere sphere2 = new Sphere(new Vector3D(100,15,0), 10F,  false);
-        Sphere sphere3 = new Sphere(new Vector3D(-100,15,0), 10F, false);
-        Sphere sphere4 = new Sphere(new Vector3D(0,15,100), 10F,  false);
-        Sphere sphere5 = new Sphere(new Vector3D(0,15,-100), 10F, false);
-        Sphere sphere6 = new Sphere(new Vector3D(120,250,0), 55F, false);
+        Sphere sphere1 = new Sphere(new Vector3D(0,30,0), 40F,  true);
+        Sphere sphere2 = new Sphere(new Vector3D(100,30,0), 10F,  false);
+        Sphere sphere3 = new Sphere(new Vector3D(-100,30,0), 10F, false);
+        Sphere sphere4 = new Sphere(new Vector3D(0,30,100), 10F,  false);
+        Sphere sphere5 = new Sphere(new Vector3D(0,30,-100), 10F, false);
+        Sphere sphere6 = new Sphere(new Vector3D(125,255,0), 5F, false);
         Sphere bottom = new Sphere(new Vector3D(0, -1E5F, -2500), 1E5F, false);
 
 
@@ -167,11 +169,14 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
-        Util.rotate(spheres.get(1).origin, 0,0.01F, 0);
-        Util.rotate(spheres.get(2).origin, 0,0.01F, 0);
-        Util.rotate(spheres.get(3).origin, 0,0.01F, 0);
-        Util.rotate(spheres.get(4).origin, 0,0.01F, 0);
+        if (rotate) {
+            Util.rotate(spheres.get(1).origin, 0, 0.01F, 0);
+            Util.rotate(spheres.get(2).origin, 0, 0.01F, 0);
+            Util.rotate(spheres.get(3).origin, 0, 0.01F, 0);
+            Util.rotate(spheres.get(4).origin, 0, 0.01F, 0);
+        }
         Util.rotate(spheres.get(5).origin, 0,-0.01F, 0);
+        Util.rotate(light.position, 0,-0.01F, 0);
     }
 
     @Override
@@ -243,12 +248,12 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
                 screen.p2       = Util.vectorAdd(screen.p2, right);
 
             }
-            case KeyEvent.VK_1 -> size = 1;
-            case KeyEvent.VK_2 -> size = 2;
-            case KeyEvent.VK_3 -> size = 3;
-            case KeyEvent.VK_4 -> size = 4;
-            case KeyEvent.VK_5 -> size = 5;
-            case KeyEvent.VK_6 -> System.out.println(camera.position);
+            case KeyEvent.VK_F -> rotate = !rotate;
+            case KeyEvent.VK_1 -> size = 3;
+            case KeyEvent.VK_2 -> size = 4;
+            case KeyEvent.VK_3 -> size = 5;
+            case KeyEvent.VK_4 -> size = 6;
+            case KeyEvent.VK_5 -> size = 7;
         }
     }
 
@@ -272,6 +277,5 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
             Util.rotateAroundPoint(camera.position, screen.p1,DEG, 0F,0F);
             Util.rotateAroundPoint(camera.position, screen.p2,DEG, 0F,0F);
         }
-
     }
 }

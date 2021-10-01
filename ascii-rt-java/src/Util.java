@@ -60,27 +60,14 @@ public class Util {
         v.setLocation(dx, v.y, dz);
     }
 
-
-
     public static void rotateX(Vector3D v, float degrees) {
         float cos = (float) Math.cos(degrees);
         float sin = (float) Math.sin(degrees);
         float negSin = (float) -Math.sin(degrees);
-        float dy = cos *  v.y + negSin * v.z;
-        float dz = sin *  v.y + cos    * v.z;
+        float dy = cos * v.y + negSin * v.z;
+        float dz = sin * v.y + cos * v.z;
         v.setLocation(v.x, dy, dz);
     }
-
-    public static void rotateTest(Vector3D v, float degrees) {
-        float cos = (float) Math.cos(degrees);
-        float sin = (float) Math.sin(degrees);
-        float negSin = (float) -Math.sin(degrees);
-        float dy = cos *  v.y + negSin * v.z;
-        float dz = sin *  v.y + cos    * v.z;
-        v.setLocation(v.x, v.y, dz);
-    }
-
-
 
     public static void rotateZ(Vector3D v, float degrees) {
         float cos = (float) Math.cos(degrees);

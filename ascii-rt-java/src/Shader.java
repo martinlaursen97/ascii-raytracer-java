@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
-
 public class Shader {
     char[] brightness2 = {'.',':','+','%','#','@'};
 
