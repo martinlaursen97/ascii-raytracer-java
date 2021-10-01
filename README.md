@@ -1,4 +1,4 @@
-# ascii-rt
+# ascii-raytracer
 W: Forward  
 S: Back  
 A: Left  
