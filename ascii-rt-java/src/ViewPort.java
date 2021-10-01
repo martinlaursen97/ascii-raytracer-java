@@ -19,14 +19,17 @@ public class ViewPort extends JPanel implements ActionListener {
     Timer t = new Timer(1, this);
 
     List<Sphere> spheres = new ArrayList<>();
-    Light light = new Light(new Vector3D(0,50,0), Color.WHITE);
+    Light light = new Light(new Vector3D(0,30,0), Color.WHITE);
 
     Shader shader = new Shader();
 
     public ViewPort() {
         Sphere sphere1 = new Sphere(new Vector3D(0,0,30), 10);
+        Sphere bottom = new Sphere(new Vector3D(0, -1E5F, -2500), 1E5F);
+
 
         spheres.add(sphere1);
+        spheres.add(bottom);
     }
 
     void run() {
@@ -106,17 +109,32 @@ public class ViewPort extends JPanel implements ActionListener {
             // Calculate brightness of pixel/character
             Vector3D lightRay = Util.vectorSubtract(light.position, point);
 
+            float len = Util.len(lightRay);
+
             // Have to normalize
             Util.normalize(normal);
             Util.normalize(lightRay);
 
-            float brightness = Util.dotP(normal, lightRay);
+            // Is a shadow if shadowRay intersects with anything on the way to the light
+            boolean isShadow = false;
+            Ray shadowRay = new Ray(point, lightRay, len);
 
-            if (brightness < 0) {
-                brightness = 0;
+            for (Sphere sph : spheres) {
+                if (shadowRay.RaySphereIntersection(sph)) {
+                    isShadow = true;
+                    break;
+                }
             }
 
-            return new PixelData(shader.getBrightness(brightness), brightness);
+            if (!isShadow) {
+                float brightness = Util.dotP(normal, lightRay);
+                if (brightness < 0) {
+                    brightness = 0;
+                }
+                return new PixelData(shader.getBrightness(brightness), brightness);
+            } else {
+                return new PixelData(' ', 0);
+            }
         }
         return new PixelData(' ', 0);
     }
