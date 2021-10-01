@@ -14,5 +14,10 @@ public class Util {
     public static float dotP(Vector3D v1, Vector3D v2) {
         return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
     }
+
+    public static float len(Vector3D v) {
+        return (float) Math.sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
+    }
 }
+
 
