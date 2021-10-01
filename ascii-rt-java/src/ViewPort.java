@@ -8,7 +8,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     int WIDTH   = 1000;
     int HEIGHT  = 800;
 
-    static int size = 4;
+    static int size = 6;
     static int pixelSize = size + 6;
 
     String FONT_NAME = "Cambria";
@@ -67,7 +67,6 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
         Font font = new Font(FONT_NAME, Font.BOLD, pixelSize);
         g.setFont(font);
-
 
         g.setColor(Color.WHITE);
 
