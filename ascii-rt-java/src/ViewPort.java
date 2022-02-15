@@ -21,18 +21,19 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     static boolean rotate = true;
 
     static List<Sphere> spheres;
+    static List<GameObject> objects;
     static Light light = new Light(new Vector3D(120,250,0), Color.WHITE);
 
     Shader shader = new Shader();
 
     public ViewPort() {
-        Sphere sphere1 = new Sphere(new Vector3D(0,30,0), 40F,  true);
-        Sphere sphere2 = new Sphere(new Vector3D(100,30,0), 10F,  false);
-        Sphere sphere3 = new Sphere(new Vector3D(-100,30,0), 10F, false);
-        Sphere sphere4 = new Sphere(new Vector3D(0,30,100), 10F,  false);
-        Sphere sphere5 = new Sphere(new Vector3D(0,30,-100), 10F, false);
-        Sphere sphere6 = new Sphere(new Vector3D(125,255,0), 5F, false);
-        Sphere bottom = new Sphere(new Vector3D(0, -1E5F, -2500), 1E5F, false);
+        Sphere sphere1 = new Sphere(true, new Vector3D(0,30,0), 40F);
+        Sphere sphere2 = new Sphere(false, new Vector3D(100,30,0), 10F);
+        Sphere sphere3 = new Sphere(false, new Vector3D(-100,30,0), 10F);
+        Sphere sphere4 = new Sphere(false, new Vector3D(0,30,100), 10F);
+        Sphere sphere5 = new Sphere(false, new Vector3D(0,30,-100), 10F);
+        Sphere sphere6 = new Sphere(false, new Vector3D(125,255,0), 5F);
+        Sphere bottom = new Sphere(false, new Vector3D(0, -1E5F, -2500), 1E5F);
 
 
         spheres = new ArrayList<>();
@@ -93,6 +94,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
                 float brightness = trace(ray);
 
                 g.setColor(Util.colorMultiply(light.color, brightness));
+                //g.fillRect(x, y, size, size);
                 g.drawString(".", x, y);
 
             }
@@ -108,7 +110,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
         // Find which sphere is hit
         for (Sphere sph : spheres) {
-            if (ray.RaySphereIntersection(sph)) {
+            if (sph.intersect(ray)) {
                 sphere = sph;
             }
         }
@@ -145,9 +147,10 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
             // Is a shadow if shadowRay intersects with anything on the way to the light
             boolean isShadow = false;
             Ray shadowRay = new Ray(point, lightRay, len);
-//
+
+            // Check if shadowRay intersects with any of the other spheres
             for (Sphere sph : spheres) {
-                if (shadowRay.RaySphereIntersection(sph)) {
+                if (sph.intersect(ray)) {
                     isShadow = true;
                     break;
                 }
