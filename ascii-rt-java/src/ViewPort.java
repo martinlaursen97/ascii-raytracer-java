@@ -13,7 +13,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
     String FONT_NAME = "Cambria";
 
-    static Camera camera = new Camera(new Vector3D(0,0,0), new Vector3D(0,0,1));
+    static Camera camera = new Camera(new Vector3D(0,0,0), new Vector3D(0,1,0));
     static Screen screen = new Screen(camera, 1F);
 
     Timer t = new Timer(1, this);
@@ -21,7 +21,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     static boolean rotate = true;
 
     //static List<Sphere> spheres;
-    static List<GameObject> objects;
+    public static List<GameObject> objects;
     static Light light = new Light(new Vector3D(120,250,0), Color.WHITE);
 
     Shader shader = new Shader();
@@ -33,7 +33,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         Sphere sphere4 = new Sphere(false, new Vector3D(0,30,100), 10F);
         Sphere sphere5 = new Sphere(false, new Vector3D(0,30,-100), 10F);
         Sphere sphere6 = new Sphere(false, new Vector3D(125,255,0), 5F);
-        Sphere bottom = new Sphere(false, new Vector3D(0, -1E5F, -2500), 1E5F);
+        //Plane bottom = new Plane(false, new Vector3D(0, 0, 0), new Vector3D(0, -1, 0));
 
 
 
@@ -44,7 +44,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         objects.add(sphere4);
         objects.add(sphere5);
         objects.add(sphere6);
-        objects.add(bottom);
+        //objects.add(bottom);
     }
 
     void run() {
@@ -74,7 +74,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
         for (int y = 0; y < HEIGHT; y += size) {
             for (int x = 0; x < WIDTH; x += size) {
-                // Scale coordinates down to screens size
+                // Scale
                 float u = (float) x / WIDTH;
                 float v = (float) y / HEIGHT;
 
@@ -113,8 +113,11 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         for (GameObject o : objects) {
             if (o.intersect(ray)) {
                 obj = o;
+
             }
         }
+
+
 
         // If object is hit
         if (obj != null) {
@@ -171,14 +174,14 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
-        if (rotate) {
-            objects.get(1).rotate(0, 0.01F, 0);
-            objects.get(2).rotate(0, 0.01F, 0);
-            objects.get(3).rotate(0, 0.01F, 0);
-            objects.get(4).rotate(0, 0.01F, 0);
-        }
-        objects.get(5).rotate(0, -0.01F, 0);
-        Util.rotate(light.position, 0,-0.01F, 0);
+        //if (rotate) {
+        //    objects.get(1).rotate(0, 0.01F, 0);
+        //    objects.get(2).rotate(0, 0.01F, 0);
+        //    objects.get(3).rotate(0, 0.01F, 0);
+        //    objects.get(4).rotate(0, 0.01F, 0);
+        //}
+        //objects.get(5).rotate(0, -0.01F, 0);
+        //Util.rotate(light.position, 0,-0.01F, 0);
     }
 
     @Override

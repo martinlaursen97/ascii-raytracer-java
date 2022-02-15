@@ -8,6 +8,7 @@ public class Sphere extends GameObject {
         this.radius = radius;
     }
 
+
     @Override
     public boolean intersect(Ray ray) {
         Vector3D originToSphere = Util.vectorSubtract(this.origin, ray.origin);
