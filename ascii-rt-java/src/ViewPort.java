@@ -13,7 +13,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
     String FONT_NAME = "Cambria";
 
-    static Camera camera = new Camera(new Vector3D(0,0,0), new Vector3D(0,1,0));
+    static Camera camera = new Camera(new Vector3D(0,0,0), new Vector3D(0,0,1));
     static Screen screen = new Screen(camera, 1F);
 
     Timer t = new Timer(1, this);
@@ -33,7 +33,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         Sphere sphere4 = new Sphere(false, new Vector3D(0,30,100), 10F);
         Sphere sphere5 = new Sphere(false, new Vector3D(0,30,-100), 10F);
         Sphere sphere6 = new Sphere(false, new Vector3D(125,255,0), 5F);
-        //Plane bottom = new Plane(false, new Vector3D(0, 0, 0), new Vector3D(0, -1, 0));
+        Plane bottom = new Plane(false, new Vector3D(0, -50, 0), new Vector3D(0, 1, 0));
 
 
 
@@ -44,7 +44,8 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         objects.add(sphere4);
         objects.add(sphere5);
         objects.add(sphere6);
-        //objects.add(bottom);
+        objects.add(bottom);
+
     }
 
     void run() {
@@ -117,14 +118,13 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
             }
         }
 
-
-
         // If object is hit
         if (obj != null) {
 
             if (obj.reflective) {
                 Vector3D pointOnObject = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
                 Vector3D normal = obj.getNormal(pointOnObject);
+
                 Util.normalize(normal);
                 Vector3D newDirection = Util.vectorReflect(ray.direction, normal);
                 Ray reflectionRay = new Ray(pointOnObject, newDirection, 100000000F);
@@ -153,7 +153,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
             // Check if shadowRay intersects with any of the other objects
             for (GameObject o : objects) {
-                if (o.intersect(ray)) {
+                if (o.intersect(shadowRay)) {
                     isShadow = true;
                     break;
                 }
@@ -164,6 +164,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
                 if (brightness < 0) {
                     brightness = 0;
                 }
+
             }
         } else {
             return 0;
