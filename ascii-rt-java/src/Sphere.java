@@ -34,4 +34,14 @@ public class Sphere extends GameObject {
 
         return false;
     }
+
+    @Override
+    public void rotate(float x, float y, float z) {
+        Util.rotate(this.origin, x, y, z);
+    }
+
+    @Override
+    public Vector3D getNormal(Vector3D point) {
+        return Util.vectorSubtract(point, this.origin);
+    }
 }

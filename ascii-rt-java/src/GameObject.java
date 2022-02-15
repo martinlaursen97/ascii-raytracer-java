@@ -6,4 +6,6 @@ public abstract class GameObject {
     }
 
     public abstract boolean intersect(Ray ray);
+    public abstract void rotate(float x, float y, float z);
+    public abstract Vector3D getNormal(Vector3D point);
 }

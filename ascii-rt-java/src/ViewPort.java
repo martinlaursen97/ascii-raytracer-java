@@ -20,7 +20,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
     static boolean rotate = true;
 
-    static List<Sphere> spheres;
+    //static List<Sphere> spheres;
     static List<GameObject> objects;
     static Light light = new Light(new Vector3D(120,250,0), Color.WHITE);
 
@@ -36,14 +36,15 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         Sphere bottom = new Sphere(false, new Vector3D(0, -1E5F, -2500), 1E5F);
 
 
-        spheres = new ArrayList<>();
-        spheres.add(sphere1);
-        spheres.add(sphere2);
-        spheres.add(sphere3);
-        spheres.add(sphere4);
-        spheres.add(sphere5);
-        spheres.add(sphere6);
-        spheres.add(bottom);
+
+        objects = new ArrayList<>();
+        objects.add(sphere1);
+        objects.add(sphere2);
+        objects.add(sphere3);
+        objects.add(sphere4);
+        objects.add(sphere5);
+        objects.add(sphere6);
+        objects.add(bottom);
     }
 
     void run() {
@@ -104,40 +105,39 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
     public float trace(Ray ray) {
 
-        Sphere sphere = null;
+        GameObject obj = null;
 
         float brightness = 0.0F;
 
-        // Find which sphere is hit
-        for (Sphere sph : spheres) {
-            if (sph.intersect(ray)) {
-                sphere = sph;
+        // Find what object is hit
+        for (GameObject o : objects) {
+            if (o.intersect(ray)) {
+                obj = o;
             }
         }
 
-        // If sphere is hit
-        if (sphere != null) {
+        // If object is hit
+        if (obj != null) {
 
-
-            if (sphere.reflective) {
-                Vector3D point = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
-                Vector3D normal = Util.vectorSubtract(point, sphere.origin);
+            if (obj.reflective) {
+                Vector3D pointOnObject = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
+                Vector3D normal = obj.getNormal(pointOnObject);
                 Util.normalize(normal);
                 Vector3D newDirection = Util.vectorReflect(ray.direction, normal);
-                Ray reflectionRay = new Ray(point, newDirection, 100000000F);
+                Ray reflectionRay = new Ray(pointOnObject, newDirection, 100000000F);
                 return trace(reflectionRay);
             }
 
-            // Find exact intersection point on sphere
-            Vector3D point = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
+            // Find exact intersection point of object
+            Vector3D pointOnObject = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
 
             // Get normal of point
-            Vector3D normal = Util.vectorSubtract(point, sphere.origin);
+            Vector3D normal = obj.getNormal(pointOnObject);
 
             Util.normalize(normal);
 
             // Calculate brightness of pixel/character
-            Vector3D lightRay = Util.vectorSubtract(light.position, point);
+            Vector3D lightRay = Util.vectorSubtract(light.position, pointOnObject);
 
             float len = Util.len(lightRay);
 
@@ -146,11 +146,11 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
             // Is a shadow if shadowRay intersects with anything on the way to the light
             boolean isShadow = false;
-            Ray shadowRay = new Ray(point, lightRay, len);
+            Ray shadowRay = new Ray(pointOnObject, lightRay, len);
 
-            // Check if shadowRay intersects with any of the other spheres
-            for (Sphere sph : spheres) {
-                if (sph.intersect(ray)) {
+            // Check if shadowRay intersects with any of the other objects
+            for (GameObject o : objects) {
+                if (o.intersect(ray)) {
                     isShadow = true;
                     break;
                 }
@@ -172,12 +172,12 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     public void actionPerformed(ActionEvent e) {
         repaint();
         if (rotate) {
-            Util.rotate(spheres.get(1).origin, 0, 0.01F, 0);
-            Util.rotate(spheres.get(2).origin, 0, 0.01F, 0);
-            Util.rotate(spheres.get(3).origin, 0, 0.01F, 0);
-            Util.rotate(spheres.get(4).origin, 0, 0.01F, 0);
+            objects.get(1).rotate(0, 0.01F, 0);
+            objects.get(2).rotate(0, 0.01F, 0);
+            objects.get(3).rotate(0, 0.01F, 0);
+            objects.get(4).rotate(0, 0.01F, 0);
         }
-        Util.rotate(spheres.get(5).origin, 0,-0.01F, 0);
+        objects.get(5).rotate(0, -0.01F, 0);
         Util.rotate(light.position, 0,-0.01F, 0);
     }
 
