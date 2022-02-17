@@ -42,7 +42,7 @@ public class Sphere extends GameObject {
     }
 
     @Override
-    public Vector3D getNormal(Vector3D point) {
+    public Vector3D originPointNormal(Vector3D point) {
         return Util.vectorSubtract(point, this.origin);
     }
 }

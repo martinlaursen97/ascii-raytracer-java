@@ -39,6 +39,13 @@ public class Util {
         return vectorSubtract(incoming, vectorMultiply(vectorMultiply(normal, 2F), dotP(incoming, normal)));
     }
 
+    public static Vector3D crossP(Vector3D v1, Vector3D v2) {
+        float a = v1.y * v2.z - v1.z * v2.y;
+        float b = -(v1.x * v2.z - v1.z * v2.x);
+        float c = v1.x * v2.y - v1.y * v2.x;
+        return new Vector3D(a, b, c);
+    }
+
     public static void rotateAroundPoint(Vector3D point, Vector3D v, float x, float y, float z) {
         v.translate(-point.x, -point.y, -point.z);
         rotate(v, x, y, z);

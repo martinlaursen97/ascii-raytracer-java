@@ -8,7 +8,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     int WIDTH   = 1000;
     int HEIGHT  = 800;
 
-    static int size = 6;
+    static int size = 15;
     static int pixelSize = size + 6;
 
     String FONT_NAME = "Cambria";
@@ -68,7 +68,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
-        Font font = new Font(FONT_NAME, Font.BOLD, pixelSize);
+        Font font = new Font(FONT_NAME, Font.PLAIN, 13);
         g.setFont(font);
 
         g.setColor(Color.WHITE);
@@ -96,8 +96,9 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
                 float brightness = trace(ray);
 
                 g.setColor(Util.colorMultiply(light.color, brightness));
-                //g.fillRect(x, y, size, size);
-                g.drawString(".", x, y);
+                g.fillRect(x, y, size, size);
+                //Character c = shader.getBrightness(brightness);
+                //g.drawString(c.toString(), x, y);
 
             }
         }
@@ -123,7 +124,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
             if (obj.reflective) {
                 Vector3D pointOnObject = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
-                Vector3D normal = obj.getNormal(pointOnObject);
+                Vector3D normal = obj.originPointNormal(pointOnObject);
 
                 Util.normalize(normal);
                 Vector3D newDirection = Util.vectorReflect(ray.direction, normal);
@@ -135,7 +136,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
             Vector3D pointOnObject = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
 
             // Get normal of point
-            Vector3D normal = obj.getNormal(pointOnObject);
+            Vector3D normal = obj.originPointNormal(pointOnObject);
 
             Util.normalize(normal);
 
@@ -175,14 +176,14 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
-        //if (rotate) {
-        //    objects.get(1).rotate(0, 0.01F, 0);
-        //    objects.get(2).rotate(0, 0.01F, 0);
-        //    objects.get(3).rotate(0, 0.01F, 0);
-        //    objects.get(4).rotate(0, 0.01F, 0);
-        //}
-        //objects.get(5).rotate(0, -0.01F, 0);
-        //Util.rotate(light.position, 0,-0.01F, 0);
+        if (rotate) {
+            objects.get(1).rotate(0, 0.01F, 0);
+            objects.get(2).rotate(0, 0.01F, 0);
+            objects.get(3).rotate(0, 0.01F, 0);
+            objects.get(4).rotate(0, 0.01F, 0);
+        }
+        objects.get(5).rotate(0, -0.01F, 0);
+        Util.rotate(light.position, 0,-0.01F, 0);
     }
 
     @Override
