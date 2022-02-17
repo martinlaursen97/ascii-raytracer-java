@@ -3,13 +3,14 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ViewPort extends JPanel implements ActionListener, KeyListener, MouseWheelListener {
     int WIDTH   = 1000;
     int HEIGHT  = 800;
 
-    static int size = 15;
-    static int pixelSize = size + 6;
+    static int size = 8;
+    static int FONT_SIZE = 10;
 
     String FONT_NAME = "Cambria";
 
@@ -73,7 +74,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
 
-        Font font = new Font(FONT_NAME, Font.PLAIN, 13);
+        Font font = new Font(FONT_NAME, Font.BOLD, FONT_SIZE);
         g.setFont(font);
 
         g.setColor(Color.WHITE);
@@ -98,23 +99,28 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
                 // Trace ray, return pixel data, fill pixel
 
-                float brightness = trace(ray);
+                TraceData pixelData = trace(ray);
+                float brightness = pixelData.brightness;
+                boolean isPlane = pixelData.isPlane;
 
                 g.setColor(Util.colorMultiply(light.color, brightness));
-                g.fillRect(x, y, size, size);
-                //Character c = shader.getBrightness(brightness);
-                //g.drawString(c.toString(), x, y);
+                //g.fillRect(x, y, size, size);
+                Character c = shader.getBrightness(brightness);
+
+                if (isPlane) {
+                    c = '.';
+                }
+
+                g.drawString(c.toString(), x, y);
 
             }
         }
         t.start();
     }
 
-    public float trace(Ray ray) {
+    public TraceData trace(Ray ray) {
 
         GameObject obj = null;
-
-        float brightness = 0.0F;
 
         // Find what object is hit
         for (GameObject o : objects) {
@@ -125,6 +131,8 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
         // If object is hit
         if (obj != null) {
+
+            float brightness = 0.0F;
 
             if (obj.reflective) {
                 Vector3D pointOnObject = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
@@ -174,16 +182,19 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
             }
 //
             if (!isShadow) {
+
                 brightness = Util.dotP(normal, lightRay);
 
                 if (brightness < 0) {
                     brightness = 0;
                 }
             }
-        } else {
-            return 0;
+
+            boolean isPlane = obj instanceof Plane;
+
+            return new TraceData(brightness, isPlane);
         }
-        return brightness;
+        return new TraceData(0, false);
     }
 
     @Override
@@ -199,6 +210,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
             objects.get(4).rotate(0, 0.01F, 0);
         }
         objects.get(5).rotate(0, -0.01F, 0);
+        objects.get(6).rotate(0, 0.01F, 0);
         Util.rotate(light.position, 0,-0.01F, 0);
     }
 
@@ -272,13 +284,39 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
             }
             case KeyEvent.VK_F -> rotate = !rotate;
-            case KeyEvent.VK_1 -> size = 3;
-            case KeyEvent.VK_2 -> size = 4;
-            case KeyEvent.VK_3 -> size = 5;
-            case KeyEvent.VK_4 -> size = 6;
-            case KeyEvent.VK_5 -> size = 7;
+            case KeyEvent.VK_1 -> size++;
+            case KeyEvent.VK_2 -> {
+                if (size != 1) {
+                    size--;
+                }
+            }
+            case KeyEvent.VK_3 -> {
+                FONT_SIZE++;
+            }
+            case KeyEvent.VK_4 -> {
+                if (size != 1) {
+                    FONT_SIZE--;
+                }
+            }
+            case KeyEvent.VK_5 -> {
+                System.out.println("size=" + size + ", FONT_SIZE=" + FONT_SIZE);
+            }
+            case KeyEvent.VK_6 -> {
+                spawnSphere(300, 200, 300, 10, 50);
+            }
         }
     }
+
+    public void spawnSphere(int x, int y, int z, int minRad, int maxRad) {
+        int rad = ThreadLocalRandom.current().nextInt(minRad, maxRad + 1);
+
+        float randomX = ThreadLocalRandom.current().nextInt(-x, x + 1);
+        float randomY = ThreadLocalRandom.current().nextInt(0, y + 1);
+        float randomZ = ThreadLocalRandom.current().nextInt(-z, z + 1);
+        objects.add(new Sphere(false, new Vector3D(randomX, randomY, randomZ), rad));
+    }
+
+
 
     @Override
     public void keyReleased(KeyEvent e) {

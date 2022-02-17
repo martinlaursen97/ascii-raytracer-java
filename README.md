@@ -5,7 +5,12 @@ A: Left
 D: Right  
 Q: Rotate left  
 E: Rotate right  
-F: Stop sphere rotations  
+F: Stop rotation
   
-1, 2, 3, 4, 5: Change resolution  
+1: pixel size++
+2: pixel size--
+3: font size++
+4: font size--
+5: print pixel + font size
+6: spawn random sphere
 
