@@ -9,6 +9,12 @@ public class Vector3D {
         this.z = z;
     }
 
+    public Vector3D(Vector3D vector3D) {
+        this.x = vector3D.x;
+        this.y = vector3D.y;
+        this.z = vector3D.z;
+    }
+
     public void setLocation(float x, float y, float z) {
         this.x = x;
         this.y = y;
@@ -19,5 +25,9 @@ public class Vector3D {
         this.x += x;
         this.y += y;
         this.z += z;
+    }
+
+    public String toString() {
+        return "x= " + x + ", y= " + y + " z=" + z;
     }
 }

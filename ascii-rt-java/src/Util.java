@@ -1,4 +1,8 @@
 import java.awt.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Util {
     public static Vector3D vectorSubtract(Vector3D v2, Vector3D v1) {
@@ -92,6 +96,47 @@ public class Util {
         float newX = cos * p.x + 0 * p.y + sin * p.z;
         float newZ = negSin * p.x + 0 * p.y + cos * p.z;
         return new Vector3D(newX, 0, newZ);
+    }
+
+    public static ArrayList<Triangle> loadObject(String filePath) {
+        ArrayList<Triangle> triangles = new ArrayList<>();
+        ArrayList<Vector3D> vectors = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> iBuffer = new ArrayList<>();
+        ArrayList<Integer> temp = new ArrayList<>();
+        vectors.add(new Vector3D(0,0,0));
+        try {
+            Scanner sc = new Scanner(new File(filePath));
+            while (sc.hasNextLine()) {
+                String text = sc.nextLine();
+                String[] arr = text.split(" ");
+
+                if (arr[0].equals("v")) {
+                    float x = Float.parseFloat(arr[1]);
+                    float y = Float.parseFloat(arr[2]);
+                    float z = Float.parseFloat(arr[3]);
+                    Vector3D v = new Vector3D(x, y, z);
+                    vectors.add(v);
+                }
+                if (arr[0].equals("f")) {
+                    for (int i = 1; i < arr.length; i++) {
+                        temp.add(Integer.parseInt(arr[i]));
+                    }
+                    iBuffer.add(new ArrayList<>(temp));
+                    temp.clear();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found");
+            return null;
+        }
+
+        for (ArrayList<Integer> i : iBuffer) {
+            triangles.add(new Triangle(false,
+                    new Vector3D(vectors.get(i.get(0))),
+                    new Vector3D(vectors.get(i.get(1))),
+                    new Vector3D(vectors.get(i.get(2)))));
+        }
+        return triangles;
     }
 }
 

@@ -32,18 +32,22 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         Sphere sphere3 = new Sphere(false, new Vector3D(-100,30,0), 10F);
         Sphere sphere4 = new Sphere(false, new Vector3D(0,30,100), 10F);
         Sphere sphere5 = new Sphere(false, new Vector3D(0,30,-100), 10F);
-        Sphere sphere6 = new Sphere(false, new Vector3D(125,255,0), 5F);
+        Sphere sphere6 = new Sphere(false, new Vector3D(125,455,0), 5F);
         Plane bottom = new Plane(false, new Vector3D(0, -50, 0), new Vector3D(0, 1, 0));
 
+        Triangle t1 = new Triangle(false, new Vector3D(0, 200, 0), new Vector3D(100, 200, 0), new Vector3D(50, 300, -100));
+
+        //ArrayList<Triangle> cube2 = Util.loadObject("teapot.txt");
 
 
-        objects = new ArrayList<>();
+       objects = new ArrayList<>();
         objects.add(sphere1);
         objects.add(sphere2);
         objects.add(sphere3);
         objects.add(sphere4);
         objects.add(sphere5);
         objects.add(sphere6);
+        objects.add(t1);
         objects.add(bottom);
 
     }
@@ -154,14 +158,19 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
             // Check if shadowRay intersects with any of the other objects
             for (GameObject o : objects) {
-                if (o.intersect(shadowRay)) {
-                    isShadow = true;
+                if (obj instanceof Triangle) {
                     break;
-                }
+                } else {
+                    if (o.intersect(shadowRay)) {
+                        isShadow = true;
+                        break;
+                    }
+            }
             }
 //
             if (!isShadow) {
                 brightness = Util.dotP(normal, lightRay);
+
                 if (brightness < 0) {
                     brightness = 0;
                 }
@@ -176,7 +185,10 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
+        objects.get(0).rotate(0, 0.01F, 0);
         if (rotate) {
+            objects.get(0).rotate(0, 0.01F, 0);
+
             objects.get(1).rotate(0, 0.01F, 0);
             objects.get(2).rotate(0, 0.01F, 0);
             objects.get(3).rotate(0, 0.01F, 0);
