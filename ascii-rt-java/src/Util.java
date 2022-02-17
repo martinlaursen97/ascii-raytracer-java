@@ -98,7 +98,7 @@ public class Util {
         return new Vector3D(newX, 0, newZ);
     }
 
-    public static ArrayList<Triangle> loadObject(String filePath) {
+    public static ArrayList<Triangle> loadObject(String filePath, boolean reflective) {
         ArrayList<Triangle> triangles = new ArrayList<>();
         ArrayList<Vector3D> vectors = new ArrayList<>();
         ArrayList<ArrayList<Integer>> iBuffer = new ArrayList<>();
@@ -131,7 +131,7 @@ public class Util {
         }
 
         for (ArrayList<Integer> i : iBuffer) {
-            triangles.add(new Triangle(false,
+            triangles.add(new Triangle(reflective,
                     new Vector3D(vectors.get(i.get(0))),
                     new Vector3D(vectors.get(i.get(1))),
                     new Vector3D(vectors.get(i.get(2)))));

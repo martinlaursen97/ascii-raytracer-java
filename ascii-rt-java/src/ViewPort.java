@@ -22,7 +22,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
 
     //static List<Sphere> spheres;
     public static List<GameObject> objects;
-    static Light light = new Light(new Vector3D(120,250,0), Color.WHITE);
+    static Light light = new Light(new Vector3D(120,450,0), Color.WHITE);
 
     Shader shader = new Shader();
 
@@ -35,12 +35,13 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         Sphere sphere6 = new Sphere(false, new Vector3D(125,455,0), 5F);
         Plane bottom = new Plane(false, new Vector3D(0, -50, 0), new Vector3D(0, 1, 0));
 
-        Triangle t1 = new Triangle(false, new Vector3D(0, 200, 0), new Vector3D(100, 200, 0), new Vector3D(50, 300, -100));
-
-        //ArrayList<Triangle> cube2 = Util.loadObject("teapot.txt");
+        Triangle t1 = new Triangle(false, new Vector3D(0, 200, 0), new Vector3D(100, 200, 0), new Vector3D(50, 200, -100));
 
 
-       objects = new ArrayList<>();
+        //ArrayList<Triangle> cube2 = Util.loadObject("teapot.txt", false);
+
+
+        objects = new ArrayList<>();
         objects.add(sphere1);
         objects.add(sphere2);
         objects.add(sphere3);
@@ -119,7 +120,6 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
         for (GameObject o : objects) {
             if (o.intersect(ray)) {
                 obj = o;
-
             }
         }
 
@@ -140,9 +140,14 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
             Vector3D pointOnObject = Util.vectorAdd(ray.origin, Util.vectorMultiply(ray.direction, ray.length));
 
             // Get normal of point
-            Vector3D normal = obj.originPointNormal(pointOnObject);
 
-            Util.normalize(normal);
+            Vector3D normal;
+            if (obj instanceof Triangle) {
+                normal = ((Triangle) obj).getNormal();
+            } else {
+                normal = obj.originPointNormal(pointOnObject);
+                Util.normalize(normal);
+            }
 
             // Calculate brightness of pixel/character
             Vector3D lightRay = Util.vectorSubtract(light.position, pointOnObject);
@@ -165,7 +170,7 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
                         isShadow = true;
                         break;
                     }
-            }
+                }
             }
 //
             if (!isShadow) {
@@ -174,7 +179,6 @@ public class ViewPort extends JPanel implements ActionListener, KeyListener, Mou
                 if (brightness < 0) {
                     brightness = 0;
                 }
-
             }
         } else {
             return 0;

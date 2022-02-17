@@ -65,8 +65,8 @@ public class Triangle extends GameObject {
     }
 
     public Vector3D getNormal() {
-        Vector3D AB = Util.vectorSubtract(pointA, pointB);
-        Vector3D AC = Util.vectorSubtract(pointA, pointC);
+        Vector3D AB = Util.vectorSubtract(pointB, pointA);
+        Vector3D AC = Util.vectorSubtract(pointC, pointA);
         Vector3D normal = Util.crossP(AB, AC);
         Util.normalize(normal);
         return normal;
